@@ -31,7 +31,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
     private static final String DELETE_TABLE_PRODUCTS =
             "DROP TABLE IF EXISTS " + InventoryContract.ProductsEntry.TABLE_NAME;
 
-    public InventoryDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public InventoryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
