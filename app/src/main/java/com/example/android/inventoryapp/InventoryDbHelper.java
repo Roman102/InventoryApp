@@ -21,6 +21,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_NAME + " TEXT NOT NULL," +
             InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE + " TEXT NOT NULL," +
             InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY + " INTEGER NOT NULL," +
+            InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID + " INTEGER NOT NULL," +
             "FOREIGN KEY(" + InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID + ") REFERENCES " +
             InventoryContract.ProductsEntry.TABLE_NAME + "(" + InventoryContract.ProductsEntry._ID + ")" +
             ")";
