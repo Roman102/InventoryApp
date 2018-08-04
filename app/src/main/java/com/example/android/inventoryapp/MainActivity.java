@@ -2,7 +2,6 @@ package com.example.android.inventoryapp;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -30,9 +29,15 @@ public class MainActivity extends AppCompatActivity {
         randomText = new Random();
     }
 
-    public void insertDataClick(View view) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+    private long insertData(String tableName, ContentValues row) {
+        return mDbHelper.getWritableDatabase().insert(tableName, null, row);
+    }
 
+    private Cursor queryData(String query_) {
+        return mDbHelper.getReadableDatabase().rawQuery(query_, null);
+    }
+
+    public void insertDataClick(View view) {
         ContentValues productRow = new ContentValues();
         ContentValues suppliersRow = new ContentValues();
 
@@ -43,21 +48,19 @@ public class MainActivity extends AppCompatActivity {
         suppliersRow.put(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE, "+123456789");
         suppliersRow.put(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY, 321);
         suppliersRow.put(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID,
-                db.insert(InventoryContract.ProductsEntry.TABLE_NAME, null, productRow)
+                insertData(InventoryContract.ProductsEntry.TABLE_NAME, productRow)
         );
 
-        debugOutput.setText(String.valueOf(db.insert(InventoryContract.SuppliersEntry.TABLE_NAME, null, suppliersRow)));
+        debugOutput.setText(String.valueOf(insertData(InventoryContract.SuppliersEntry.TABLE_NAME, suppliersRow)));
     }
 
     public void queryDataClick(View view) {
-        StringBuilder result = new StringBuilder();
-
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM " + InventoryContract.ProductsEntry.TABLE_NAME +
+        Cursor cursor = queryData("SELECT * FROM " + InventoryContract.ProductsEntry.TABLE_NAME +
                 " a INNER JOIN " + InventoryContract.SuppliersEntry.TABLE_NAME +
                 " b ON a." + InventoryContract.ProductsEntry._ID + "=b." +
-                InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID, null);
+                InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID);
+
+        StringBuilder result = new StringBuilder();
 
         while (cursor.moveToNext()) {
             result.append(cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME))).append(", ")
