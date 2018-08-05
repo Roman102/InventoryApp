@@ -44,10 +44,6 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(DELETE_TABLE_SUPPLIERS);
-        db.execSQL(DELETE_TABLE_PRODUCTS);
-
-        onCreate(db);
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
