@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class InventoryDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Inventory.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Inventory.db";
 
     private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE " + InventoryContract.ProductsEntry.TABLE_NAME + " (" +
             InventoryContract.ProductsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -25,12 +25,6 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             "FOREIGN KEY(" + InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID + ") REFERENCES " +
             InventoryContract.ProductsEntry.TABLE_NAME + "(" + InventoryContract.ProductsEntry._ID + ")" +
             ")";
-
-    private static final String DELETE_TABLE_SUPPLIERS =
-            "DROP TABLE IF EXISTS " + InventoryContract.SuppliersEntry.TABLE_NAME;
-
-    private static final String DELETE_TABLE_PRODUCTS =
-            "DROP TABLE IF EXISTS " + InventoryContract.ProductsEntry.TABLE_NAME;
 
     public InventoryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
