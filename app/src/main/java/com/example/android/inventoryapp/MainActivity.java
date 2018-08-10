@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.android.inventoryapp.data.InventoryContract;
+import com.example.android.inventoryapp.data.InventoryDbHelper;
+
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
