@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">Inventory App</string>
-    <string name="insertData">insertData</string>
-    <string name="queryData">queryData</string>
 </resources>
