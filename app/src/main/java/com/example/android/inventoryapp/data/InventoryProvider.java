@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.telephony.PhoneNumberUtils;
 
+import com.example.android.inventoryapp.R;
 
 public class InventoryProvider extends ContentProvider {
 
@@ -20,6 +22,8 @@ public class InventoryProvider extends ContentProvider {
     public static final int UPDATE_PRODUCT = 104;
     public static final int ADD_SUPPLIER = 105;
     public static final int UPDATE_SUPPLIER = 106;
+    public static final int DELETE_ALL = 107;
+    public static final int PRODUCTS = 108;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -29,8 +33,10 @@ public class InventoryProvider extends ContentProvider {
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_SELL + "/#", SELL);
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_ADD_PRODUCT, ADD_PRODUCT);
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_UPDATE_PRODUCT + "/#", UPDATE_PRODUCT);
-        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_ADD_SUPPLIER + "/#", ADD_SUPPLIER);
+        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_ADD_SUPPLIER, ADD_SUPPLIER);
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_UPDATE_SUPPLIER + "/#", UPDATE_SUPPLIER);
+        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_DELETE_ALL, DELETE_ALL);
+        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_PRODUCTS + "/#", PRODUCTS);
     }
 
     private InventoryDbHelper inventoryDbHelper;
@@ -49,9 +55,7 @@ public class InventoryProvider extends ContentProvider {
 
         Cursor cursor = null;
 
-        final int match = sUriMatcher.match(uri);
-
-        switch (match) {
+        switch (sUriMatcher.match(uri)) {
             case MAIN_VIEW:
                 cursor = database.rawQuery("SELECT a." + InventoryContract.ProductsEntry._ID +
                         ", a." + InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME +
@@ -70,7 +74,7 @@ public class InventoryProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             default:
-                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_unknown_uri, uri));
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -95,28 +99,256 @@ public class InventoryProvider extends ContentProvider {
             case UPDATE_PRODUCT:
                 return InventoryContract.CONTENT_UPDATE_PRODUCT_ITEM_TYPE;
             case ADD_SUPPLIER:
-                return InventoryContract.CONTENT_ADD_SUPPLIER_ITEM_TYPE;
+                return InventoryContract.CONTENT_ADD_SUPPLIER_TYPE;
             case UPDATE_SUPPLIER:
                 return InventoryContract.CONTENT_UPDATE_SUPPLIER_ITEM_TYPE;
+            case DELETE_ALL:
+                return InventoryContract.CONTENT_DELETE_ALL_TYPE;
+            case PRODUCTS:
+                return InventoryContract.CONTENT_PRODUCTS_ITEM_TYPE;
             default:
-                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_unknown_uri_with_match, uri, match));
         }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+        switch (sUriMatcher.match(uri)) {
+            case ADD_PRODUCT:
+                return addProduct(uri, contentValues);
+            case ADD_SUPPLIER:
+                return addSupplier(uri, contentValues);
+            default:
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_insertion_not_supported_for_uri, uri));
+        }
+    }
+
+    private Uri addSupplier(Uri uri, ContentValues values) {
+        ensureValidSupplierData(values);
+
+        SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
+
+        long id = database.insert(InventoryContract.SuppliersEntry.TABLE_NAME, null, values);
+
+        if (id == -1) {
+            throw new RuntimeException(getContext().getResources().getString(R.string.error_failed_to_insert_row_for_uri, uri));
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+    private void ensureValidSupplierData(ContentValues values) {
+        ensureNonemptyNameColumn(values, InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_NAME, R.string.error_supplier_requires_a_name);
+
+        ensureValidPhoneNumber(values, ensureCountryCodeExists(values));
+
+        ensureValidQuantity(values);
+
+        ensureValidProductId(values);
+    }
+
+    private void ensureValidProductId(ContentValues values) {
+        Integer productId = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID);
+
+        if (productId < 1) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_product_id_should_be_at_least_one));
+        }
+    }
+
+    private void ensureValidQuantity(ContentValues values) {
+        Integer quantity = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY);
+
+        if (quantity < 0) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_quantity_should_be_at_least_zero));
+        }
+    }
+
+    private void ensureValidPhoneNumber(ContentValues values, String countryCode) {
+        String phone = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE);
+
+        if (phone == null) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_phone_number_missing));
+        }
+
+        phone = PhoneNumberUtils.formatNumber(phone, countryCode);
+
+        if (phone == null) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_phone_or_country_code_invalid));
+        }
+    }
+
+    @NonNull
+    private String ensureCountryCodeExists(ContentValues values) {
+        String countryCode = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_COUNTRY_CODE);
+
+        if (countryCode == null) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
+        }
+
+        countryCode = countryCode.trim();
+
+        if (countryCode.length() != 2 && countryCode.length() != 3) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
+        }
+        return countryCode;
+    }
+
+    private void ensureNonemptyNameColumn(ContentValues values, String columnName, int errorMessage) {
+        String name = values.getAsString(columnName);
+
+        if (name == null) {
+            throw new IllegalArgumentException(getContext().getResources().getString(errorMessage));
+        }
+
+        name = name.trim();
+
+        if (name.length() == 0) {
+            throw new IllegalArgumentException(getContext().getResources().getString(errorMessage));
+        }
+    }
+
+    private Uri addProduct(Uri uri, ContentValues values) {
+        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name);
+
+        ensureValidPrice(values);
+
+        SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
+
+        long id = database.insert(InventoryContract.ProductsEntry.TABLE_NAME, null, values);
+
+        if (id == -1) {
+            throw new RuntimeException(getContext().getResources().getString(R.string.error_failed_to_insert_row_for_uri, uri));
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+    private void ensureValidPrice(ContentValues values) {
+        Integer price = values.getAsInteger(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE);
+
+        if (price == null || price < 1) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_price_should_be_at_least_one));
+        }
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
+
+        int rowsDeleted;
+
+        switch (sUriMatcher.match(uri)) {
+            case DELETE_ALL:
+                rowsDeleted = database.delete(InventoryContract.SuppliersEntry.TABLE_NAME, null, null);
+                rowsDeleted += database.delete(InventoryContract.ProductsEntry.TABLE_NAME, null, null);
+                break;
+            case PRODUCTS:
+                rowsDeleted = database.delete(InventoryContract.SuppliersEntry.TABLE_NAME,
+                        InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
+
+                rowsDeleted += database.delete(InventoryContract.ProductsEntry.TABLE_NAME,
+                        InventoryContract.ProductsEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
+                break;
+            default:
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_deletion_is_not_supported_for_uri, uri));
+        }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+            case SELL:
+                return sellOneProductItem(uri, database);
+            case UPDATE_PRODUCT:
+                return updateProduct(uri, values, database);
+            case UPDATE_SUPPLIER:
+                ensureValidSupplierData(values);
+
+                if (values.size() == 0) {
+                    return 0;
+                }
+
+                int rowsUpdated = database.update(InventoryContract.ProductsEntry.TABLE_NAME, values, InventoryContract.SuppliersEntry._ID + "=?", new String[]{String.valueOf(ContentUris.parseId(uri))});
+
+                if (rowsUpdated != 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return rowsUpdated;
+            default:
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_update_is_not_supported_for_uri, uri));
+        }
+    }
+
+    private int updateProduct(@NonNull Uri uri, @Nullable ContentValues values, SQLiteDatabase database) {
+        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name);
+
+        ensureValidPrice(values);
+
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        int rowsUpdated = database.update(InventoryContract.ProductsEntry.TABLE_NAME, values, InventoryContract.ProductsEntry._ID + "=?", new String[]{String.valueOf(ContentUris.parseId(uri))});
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
+    }
+
+    private int sellOneProductItem(@NonNull Uri uri, SQLiteDatabase database) {
+        Cursor cursor = database.rawQuery(
+                "SELECT " + InventoryContract.SuppliersEntry._ID + ", " + InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY +
+                        " FROM " + InventoryContract.SuppliersEntry.TABLE_NAME +
+                        " WHERE " + InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID + "=? AND " +
+                        InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY + " > 0 LIMIT 1",
+                new String[]{String.valueOf(ContentUris.parseId(uri))});
+
+        int rowsUpdated = 0;
+
+        if (cursor.getCount() == 1) {
+            ContentValues values = new ContentValues();
+
+            values.put(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY,
+                    cursor.getLong(cursor.getColumnIndexOrThrow(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY)) - 1);
+
+            rowsUpdated = database.update(InventoryContract.SuppliersEntry.TABLE_NAME, values,
+                    InventoryContract.SuppliersEntry._ID + "=?",
+                    new String[]{String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(InventoryContract.SuppliersEntry._ID)))});
+
+            cursor.close();
+        } else {
+            cursor.close();
+
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_suppliers_dont_have_product));
+        }
+
+        if (rowsUpdated == 1) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            throw new RuntimeException(getContext().getResources().getString(R.string.error_unable_to_sell_one_product_item_for_uri, uri));
+        }
+
+        return rowsUpdated;
     }
 
 }
