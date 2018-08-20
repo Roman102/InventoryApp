@@ -61,7 +61,8 @@ public class InventoryProvider extends ContentProvider {
                         ", a." + InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME +
                         ", a." + InventoryContract.ProductsEntry.COLUMN_NAME_PRICE +
                         ", SUM(b." + InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY +
-                        ") FROM " + InventoryContract.ProductsEntry.TABLE_NAME +
+                        ") AS " + InventoryContract.SuppliersEntry.COLUMN_NAME_TOTAL_QUANTITY +
+                        " FROM " + InventoryContract.ProductsEntry.TABLE_NAME +
                         " a INNER JOIN " + InventoryContract.SuppliersEntry.TABLE_NAME +
                         " b ON a." + InventoryContract.ProductsEntry._ID + "=b." +
                         InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID +

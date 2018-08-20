@@ -17,4 +17,10 @@
     <string name="error_update_is_not_supported_for_uri">Update is not supported for %1$s</string>
     <string name="error_suppliers_dont_have_product">Your suppliers don\'t have this product.</string>
     <string name="error_unable_to_sell_one_product_item_for_uri">Unable to sell one product item for URI %1$s</string>
+    <string name="add_product">Add Product</string>
+    <string name="product_name">Product Name:</string>
+    <string name="price">Price:</string>
+    <string name="quantity">Quantity:</string>
+    <string name="sell">Sell</string>
+    <string name="explanation">Add a product by pressing the button above.</string>
 </resources>

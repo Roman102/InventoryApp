@@ -61,6 +61,8 @@ public final class InventoryContract {
         public static final String COLUMN_NAME_QUANTITY = "quantity";
         public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
 
+        public static final String COLUMN_NAME_TOTAL_QUANTITY = "total_quantity";
+
     }
 
 }
