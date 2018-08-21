@@ -327,6 +327,8 @@ public class InventoryProvider extends ContentProvider {
         int rowsUpdated = 0;
 
         if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
+
             ContentValues values = new ContentValues();
 
             values.put(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY,
@@ -344,7 +346,7 @@ public class InventoryProvider extends ContentProvider {
         }
 
         if (rowsUpdated == 1) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            getContext().getContentResolver().notifyChange(InventoryContract.CONTENT_URI_MAIN_VIEW, null);
         } else {
             throw new RuntimeException(getContext().getResources().getString(R.string.error_unable_to_sell_one_product_item_for_uri, uri));
         }
