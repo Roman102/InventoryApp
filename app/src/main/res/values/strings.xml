@@ -15,6 +15,7 @@
     <string name="label_supplier_phone">Supplier\'s phone:</string>
 
     <string name="cancel">Cancel</string>
+    <string name="return_">Return</string>
     <string name="save">Save</string>
 
     <string name="error_unknown_uri">Cannot query unknown URI %1$s</string>
@@ -25,7 +26,6 @@
     <string name="error_product_requires_a_name">Product requires a name.</string>
     <string name="error_country_code_missing">Please specify the country code for supplier\'s phone number.</string>
     <string name="error_phone_number_missing">A phone number should be specified.</string>
-    <string name="error_phone_or_country_code_invalid">Either the supplier\'s country code or his/her phone number is invalid.</string>
     <string name="error_quantity_should_be_at_least_zero">The quantity should be at least 0.</string>
     <string name="error_product_id_should_be_at_least_one">The product id should be at least 1.</string>
     <string name="error_price_should_be_at_least_one">The price should be at least 1.</string>
@@ -33,4 +33,5 @@
     <string name="error_update_is_not_supported_for_uri">Update is not supported for %1$s</string>
     <string name="error_suppliers_dont_have_product">Your suppliers don\'t have this product.</string>
     <string name="error_unable_to_sell_one_product_item_for_uri">Unable to sell one product item for URI %1$s</string>
+    <string name="error_nothing_updated">Nothing was updated!</string>
 </resources>

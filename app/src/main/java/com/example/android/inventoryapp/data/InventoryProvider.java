@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.telephony.PhoneNumberUtils;
 
 import com.example.android.inventoryapp.R;
 
@@ -126,7 +125,7 @@ public class InventoryProvider extends ContentProvider {
     }
 
     private Uri addSupplier(Uri uri, ContentValues values) {
-        ensureValidSupplierData(values);
+        ensureValidSupplierData(values, true);
 
         SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
 
@@ -141,80 +140,89 @@ public class InventoryProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-    private void ensureValidSupplierData(ContentValues values) {
-        ensureNonemptyNameColumn(values, InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_NAME, R.string.error_supplier_requires_a_name);
+    private void ensureValidSupplierData(ContentValues values, boolean strictCheck) {
+        ensureNonemptyNameColumn(values, InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_NAME, R.string.error_supplier_requires_a_name, strictCheck);
 
-        ensureValidPhoneNumber(values, ensureCountryCodeExists(values));
+        ensureCountryCodeExists(values, strictCheck);
 
-        ensureValidQuantity(values);
+        ensureValidPhoneNumber(values, strictCheck);
 
-        ensureValidProductId(values);
+        ensureValidQuantity(values, strictCheck);
+
+        ensureValidProductId(values, strictCheck);
     }
 
-    private void ensureValidProductId(ContentValues values) {
-        Integer productId = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID);
+    private void ensureValidProductId(ContentValues values, boolean strictCheck) {
+        if (values.containsKey(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID)) {
+            Integer productId = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID);
 
-        if (productId < 1) {
+            if (productId == null || productId < 1) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_product_id_should_be_at_least_one));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_product_id_should_be_at_least_one));
         }
     }
 
-    private void ensureValidQuantity(ContentValues values) {
-        Integer quantity = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY);
+    private void ensureValidQuantity(ContentValues values, boolean strictCheck) {
+        if (values.containsKey(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY)) {
+            Integer quantity = values.getAsInteger(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY);
 
-        if (quantity < 0) {
+            if (quantity == null || quantity < 0) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_quantity_should_be_at_least_zero));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_quantity_should_be_at_least_zero));
         }
     }
 
-    private void ensureValidPhoneNumber(ContentValues values, String countryCode) {
-        String phone = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE);
+    private void ensureValidPhoneNumber(ContentValues values, boolean strictCheck) {
+        if (values.containsKey(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE)) {
+            String phone = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE);
 
-        if (phone == null) {
+            if (phone == null || phone.trim().length() == 0) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_phone_number_missing));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_phone_number_missing));
-        }
-
-        phone = PhoneNumberUtils.formatNumber(phone, countryCode);
-
-        if (phone == null) {
-            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_phone_or_country_code_invalid));
         }
     }
 
     @NonNull
-    private String ensureCountryCodeExists(ContentValues values) {
-        String countryCode = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_COUNTRY_CODE);
+    private void ensureCountryCodeExists(ContentValues values, boolean strictCheck) {
+        if (values.containsKey(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_COUNTRY_CODE)) {
+            String countryCode = values.getAsString(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_COUNTRY_CODE);
 
-        if (countryCode == null) {
+            if (countryCode == null) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
+            }
+
+            countryCode = countryCode.trim();
+
+            if (!(countryCode.length() == 2 || countryCode.length() == 3)) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
         }
-
-        countryCode = countryCode.trim();
-
-        if (countryCode.length() != 2 && countryCode.length() != 3) {
-            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_country_code_missing));
-        }
-        return countryCode;
     }
 
-    private void ensureNonemptyNameColumn(ContentValues values, String columnName, int errorMessage) {
-        String name = values.getAsString(columnName);
+    private void ensureNonemptyNameColumn(ContentValues values, String columnName, int errorMessage, boolean strictCheck) {
+        if (values.containsKey(columnName)) {
+            String name = values.getAsString(columnName);
 
-        if (name == null) {
-            throw new IllegalArgumentException(getContext().getResources().getString(errorMessage));
-        }
-
-        name = name.trim();
-
-        if (name.length() == 0) {
+            if (name == null || name.trim().length() == 0) {
+                throw new IllegalArgumentException(getContext().getResources().getString(errorMessage));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(errorMessage));
         }
     }
 
     private Uri addProduct(Uri uri, ContentValues values) {
-        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name);
+        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name, true);
 
-        ensureValidPrice(values);
+        ensureValidPrice(values, true);
 
         SQLiteDatabase database = inventoryDbHelper.getWritableDatabase();
 
@@ -229,10 +237,14 @@ public class InventoryProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-    private void ensureValidPrice(ContentValues values) {
-        Integer price = values.getAsInteger(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE);
+    private void ensureValidPrice(ContentValues values, boolean strictCheck) {
+        if (values.containsKey(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE)) {
+            Integer price = values.getAsInteger(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE);
 
-        if (price == null || price < 1) {
+            if (price == null || price < 1) {
+                throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_price_should_be_at_least_one));
+            }
+        } else if (strictCheck) {
             throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_price_should_be_at_least_one));
         }
     }
@@ -280,16 +292,18 @@ public class InventoryProvider extends ContentProvider {
             case UPDATE_PRODUCT:
                 return updateProduct(uri, values, database);
             case UPDATE_SUPPLIER:
-                ensureValidSupplierData(values);
+                ensureValidSupplierData(values, false);
 
                 if (values.size() == 0) {
                     return 0;
                 }
 
-                int rowsUpdated = database.update(InventoryContract.ProductsEntry.TABLE_NAME, values, InventoryContract.SuppliersEntry._ID + "=?", new String[]{String.valueOf(ContentUris.parseId(uri))});
+                int rowsUpdated = database.update(InventoryContract.SuppliersEntry.TABLE_NAME, values,
+                        InventoryContract.SuppliersEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))});
 
-                if (rowsUpdated != 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
+                if (rowsUpdated <= 0) {
+                    throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_nothing_updated));
                 }
 
                 return rowsUpdated;
@@ -299,9 +313,9 @@ public class InventoryProvider extends ContentProvider {
     }
 
     private int updateProduct(@NonNull Uri uri, @Nullable ContentValues values, SQLiteDatabase database) {
-        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name);
+        ensureNonemptyNameColumn(values, InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, R.string.error_product_requires_a_name, false);
 
-        ensureValidPrice(values);
+        ensureValidPrice(values, false);
 
         if (values.size() == 0) {
             return 0;

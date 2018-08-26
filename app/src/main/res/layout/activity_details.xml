@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="closeScreen"
-            android:text="@string/cancel" />
+            android:text="@string/return_" />
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
