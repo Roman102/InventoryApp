@@ -1,6 +1,7 @@
 package com.example.android.inventoryapp;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract;
 
@@ -24,6 +26,9 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     private Long productId;
 
+    private EditText productName;
+    private EditText price;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +37,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         productId = getIntent().getLongExtra(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID, -1);
 
-        ((EditText) findViewById(R.id.product_name)).setText(getIntent().getStringExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME));
-        ((EditText) findViewById(R.id.price)).setText(String.valueOf(getIntent().getLongExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE, -1)));
+        productName = findViewById(R.id.product_name);
+        price = findViewById(R.id.price);
+
+        productName.setText(getIntent().getStringExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME));
+        price.setText(String.valueOf(getIntent().getLongExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE, -1)));
 
         detailsAdapter = new DetailsAdapter(this, null);
 
@@ -84,6 +92,26 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     public void closeScreen(View view) {
         finish();
+    }
+
+    public void saveProduct(View view) {
+        ContentValues values = new ContentValues();
+
+        values.put(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME, productName.getText().toString());
+
+        try {
+            values.put(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE, Long.parseLong(price.getText().toString()));
+
+            getContentResolver().update(ContentUris.withAppendedId(InventoryContract.CONTENT_UPDATE_PRODUCT, productId), values, null, null);
+
+            getContentResolver().notifyChange(InventoryContract.CONTENT_URI_MAIN_VIEW, null);
+
+            finish();
+        } catch (NumberFormatException e) {
+            (Toast.makeText(this, R.string.error_price_should_be_at_least_one, Toast.LENGTH_SHORT)).show();
+        } catch (RuntimeException e) {
+            (Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT)).show();
+        }
     }
 
 }

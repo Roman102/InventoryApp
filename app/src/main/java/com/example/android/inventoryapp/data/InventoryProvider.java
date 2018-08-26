@@ -323,8 +323,8 @@ public class InventoryProvider extends ContentProvider {
 
         int rowsUpdated = database.update(InventoryContract.ProductsEntry.TABLE_NAME, values, InventoryContract.ProductsEntry._ID + "=?", new String[]{String.valueOf(ContentUris.parseId(uri))});
 
-        if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+        if (rowsUpdated <= 0) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_nothing_updated));
         }
 
         return rowsUpdated;
