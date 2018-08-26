@@ -15,7 +15,7 @@ import com.example.android.inventoryapp.data.InventoryContract;
 
 public class InventoryAdapter extends CursorAdapter {
 
-    public InventoryAdapter(Context context, Cursor c) {
+    InventoryAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }
 
@@ -28,20 +28,20 @@ public class InventoryAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         Button sellButton = view.findViewById(R.id.sell);
 
-        sellButton.setTag(cursor.getString(cursor.getColumnIndex(InventoryContract.ProductsEntry._ID)));
+        final long productId = Long.parseLong(cursor.getString(cursor.getColumnIndex(InventoryContract.ProductsEntry._ID)));
+
+        view.setTag(productId);
+
         sellButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 try {
                     context.getContentResolver().update(
-                            ContentUris.withAppendedId(
-                                    InventoryContract.CONTENT_URI_SELL,
-                                    Long.parseLong(view.getTag().toString())
-                            ),
+                            ContentUris.withAppendedId(InventoryContract.CONTENT_URI_SELL, productId),
                             null, null, null
                     );
-                } catch (IllegalArgumentException e) {
+                } catch (RuntimeException e) {
                     (Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT)).show();
                 }
             }
