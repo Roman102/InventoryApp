@@ -59,4 +59,8 @@ public class EditSupplierActivity extends AppCompatActivity {
         }
     }
 
+    public void closeScreen(View view) {
+        finish();
+    }
+
 }

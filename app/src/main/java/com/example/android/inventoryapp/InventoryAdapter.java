@@ -3,6 +3,7 @@ package com.example.android.inventoryapp;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,19 @@ public class InventoryAdapter extends CursorAdapter {
         ((TextView) view.findViewById(R.id.product_name)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME)));
         ((TextView) view.findViewById(R.id.price)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE)));
         ((TextView) view.findViewById(R.id.quantity)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_TOTAL_QUANTITY)));
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = super.getView(position, convertView, parent);
+
+        if (position % 2 == 1) {
+            view.setBackgroundColor(Color.WHITE);
+        } else {
+            view.setBackgroundColor(Color.LTGRAY);
+        }
+
+        return view;
     }
 
 }

@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,8 +32,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         productId = getIntent().getLongExtra(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID, -1);
 
-        ((TextView) findViewById(R.id.product_name)).setText(getIntent().getStringExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME));
-        ((TextView) findViewById(R.id.price)).setText(String.valueOf(getIntent().getLongExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE, -1)));
+        ((EditText) findViewById(R.id.product_name)).setText(getIntent().getStringExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRODUCT_NAME));
+        ((EditText) findViewById(R.id.price)).setText(String.valueOf(getIntent().getLongExtra(InventoryContract.ProductsEntry.COLUMN_NAME_PRICE, -1)));
 
         detailsAdapter = new DetailsAdapter(this, null);
 
@@ -79,6 +80,10 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         detailsAdapter.swapCursor(null);
+    }
+
+    public void closeScreen(View view) {
+        finish();
     }
 
 }

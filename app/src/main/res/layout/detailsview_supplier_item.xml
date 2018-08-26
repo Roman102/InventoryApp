@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:labelFor="@id/supplier_name"
-        android:text="@string/label_supplier_name" />
+        android:text="@string/label_supplier_name"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/supplier_name"
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:labelFor="@id/supplier_country_code"
         android:text="@string/label_supplier_country_code"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/supplier_name" />
 
     <TextView
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:labelFor="@id/supplier_phone"
         android:text="@string/label_supplier_phone"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/supplier_country_code" />
 
     <TextView
@@ -51,6 +54,7 @@
         android:layout_height="wrap_content"
         android:labelFor="@id/quantity"
         android:text="@string/quantity"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/supplier_phone" />
 
     <TextView

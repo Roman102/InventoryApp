@@ -4,12 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/navigation_bar"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="closeScreen"
+            android:text="@string/cancel" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/save" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/label_supplier_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:labelFor="@id/supplier_name"
-        android:text="@string/label_supplier_name" />
+        android:text="@string/label_supplier_name"
+        app:layout_constraintTop_toBottomOf="@+id/navigation_bar" />
 
     <EditText
         android:id="@+id/supplier_name"

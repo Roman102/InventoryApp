@@ -14,6 +14,9 @@
     <string name="label_supplier_country_code">Supplier\'s country code:</string>
     <string name="label_supplier_phone">Supplier\'s phone:</string>
 
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+
     <string name="error_unknown_uri">Cannot query unknown URI %1$s</string>
     <string name="error_unknown_uri_with_match">Unknown URI %1$s with match %2$d</string>
     <string name="error_insertion_not_supported_for_uri">Insertion is not supported for %1$s</string>

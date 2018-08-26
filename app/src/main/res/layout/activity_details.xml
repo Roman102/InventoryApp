@@ -4,6 +4,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="closeScreen"
+            android:text="@string/cancel" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/save" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/label_product_name"
         android:layout_width="wrap_content"
@@ -11,10 +32,11 @@
         android:labelFor="@id/product_name"
         android:text="@string/product_name" />
 
-    <TextView
+    <EditText
         android:id="@+id/product_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/label_price"
@@ -23,16 +45,22 @@
         android:labelFor="@id/price"
         android:text="@string/price" />
 
-    <TextView
+    <EditText
         android:id="@+id/price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal" />
 
     <TextView
         android:id="@+id/label_suppliers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_suppliers" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:labelFor="@id/suppliers_list"
+        android:text="@string/label_suppliers"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/suppliers_list"
