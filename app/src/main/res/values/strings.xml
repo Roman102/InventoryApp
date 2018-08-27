@@ -3,11 +3,19 @@
 
     <string name="explanation">Add a product by pressing the button above. Afterwards touch a product entry in order to modify it.</string>
 
+    <string name="add_another_supplier">Do you want to add another supplier?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="add_supplier">Add supplier</string>
     <string name="add_product">Add Product</string>
+    <string name="save_product_details">Save product details</string>
+    <string name="sell">Sell</string>
+
     <string name="product_name">Product Name:</string>
     <string name="price">Price:</string>
     <string name="quantity">Quantity:</string>
-    <string name="sell">Sell</string>
 
     <string name="label_suppliers">Suppliers:</string>
     <string name="label_supplier_name">Supplier\'s name:</string>
@@ -17,6 +25,7 @@
     <string name="cancel">Cancel</string>
     <string name="return_">Return</string>
     <string name="save">Save</string>
+    <string name="continue_">Continue</string>
 
     <string name="error_unknown_uri">Cannot query unknown URI %1$s</string>
     <string name="error_unknown_uri_with_match">Unknown URI %1$s with match %2$d</string>
@@ -34,4 +43,5 @@
     <string name="error_suppliers_dont_have_product">Your suppliers don\'t have this product.</string>
     <string name="error_unable_to_sell_one_product_item_for_uri">Unable to sell one product item for URI %1$s</string>
     <string name="error_nothing_updated">Nothing was updated!</string>
+    <string name="error_price_too_large_or_invalid_number">The price is too large or is an invalid number.</string>
 </resources>

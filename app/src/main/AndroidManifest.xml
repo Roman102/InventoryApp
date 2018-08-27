@@ -23,7 +23,9 @@
             android:exported="false" />
 
         <activity android:name=".DetailsActivity" />
-        <activity android:name=".EditSupplierActivity"></activity>
+        <activity android:name=".EditSupplierActivity" />
+        <activity android:name=".AddProductActivity" />
+        <activity android:name=".AddSupplierActivity"></activity>
     </application>
 
 </manifest>

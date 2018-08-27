@@ -72,4 +72,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         inventoryAdapter.swapCursor(null);
     }
 
+    public void addProduct(View view) {
+        startActivity(new Intent(MainActivity.this, AddProductActivity.class));
+    }
+
 }

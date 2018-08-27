@@ -22,16 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="addSupplier"
-            android:text="@string/add_supplier" />
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="saveProduct"
-            android:text="@string/save_product_details" />
+            android:onClick="createNewSupplier"
+            android:text="@string/continue_" />
     </LinearLayout>
 
     <TextView
@@ -59,20 +51,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal" />
-
-    <TextView
-        android:id="@+id/label_suppliers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:labelFor="@id/suppliers_list"
-        android:text="@string/label_suppliers"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <ListView
-        android:id="@+id/suppliers_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
 </LinearLayout>

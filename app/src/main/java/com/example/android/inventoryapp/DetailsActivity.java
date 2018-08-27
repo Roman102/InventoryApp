@@ -114,4 +114,12 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
+    public void addSupplier(View view) {
+        Intent intent = new Intent(DetailsActivity.this, AddSupplierActivity.class);
+
+        intent.putExtra(InventoryContract.SuppliersEntry.COLUMN_NAME_PRODUCT_ID, productId);
+
+        startActivity(intent);
+    }
+
 }

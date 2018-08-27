@@ -135,8 +135,6 @@ public class InventoryProvider extends ContentProvider {
             throw new RuntimeException(getContext().getResources().getString(R.string.error_failed_to_insert_row_for_uri, uri));
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
-
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -231,8 +229,6 @@ public class InventoryProvider extends ContentProvider {
         if (id == -1) {
             throw new RuntimeException(getContext().getResources().getString(R.string.error_failed_to_insert_row_for_uri, uri));
         }
-
-        getContext().getContentResolver().notifyChange(uri, null);
 
         return ContentUris.withAppendedId(uri, id);
     }
