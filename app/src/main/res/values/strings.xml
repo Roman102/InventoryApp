@@ -17,6 +17,7 @@
     <string name="save_product_details">Save product details</string>
 
     <string name="sell">Sell</string>
+    <string name="order">Order</string>
 
     <string name="delete">Delete</string>
     <string name="delete_all_products">Delete all products</string>

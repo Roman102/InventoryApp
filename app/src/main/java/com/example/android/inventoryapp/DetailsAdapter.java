@@ -3,8 +3,10 @@ package com.example.android.inventoryapp;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,9 +32,11 @@ public class DetailsAdapter extends CursorAdapter {
     public void bindView(final View view, final Context context, final Cursor cursor) {
         view.setTag(cursor.getLong(cursor.getColumnIndex(InventoryContract.SuppliersEntry._ID)));
 
+        final TextView supplierPhone = view.findViewById(R.id.supplier_phone);
+
         ((TextView) view.findViewById(R.id.supplier_name)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_NAME)));
         ((TextView) view.findViewById(R.id.supplier_country_code)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_COUNTRY_CODE)));
-        ((TextView) view.findViewById(R.id.supplier_phone)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE)));
+        supplierPhone.setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_SUPPLIER_PHONE)));
         ((TextView) view.findViewById(R.id.quantity)).setText(cursor.getString(cursor.getColumnIndex(InventoryContract.SuppliersEntry.COLUMN_NAME_QUANTITY)));
 
         view.findViewById(R.id.delete_supplier).setOnClickListener(new View.OnClickListener() {
@@ -75,6 +79,16 @@ public class DetailsAdapter extends CursorAdapter {
                         .setPositiveButton(R.string.yes, dialogClickListener)
                         .setNegativeButton(R.string.no, dialogClickListener)
                         .show();
+            }
+
+        });
+
+        view.findViewById(R.id.order).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(Intent.ACTION_DIAL,
+                        Uri.fromParts("tel", supplierPhone.getText().toString(), null)));
             }
 
         });
