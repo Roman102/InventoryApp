@@ -23,6 +23,7 @@ public class InventoryProvider extends ContentProvider {
     public static final int UPDATE_SUPPLIER = 106;
     public static final int DELETE_ALL = 107;
     public static final int PRODUCTS = 108;
+    public static final int DELETE_SUPPLIER = 109;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -36,6 +37,7 @@ public class InventoryProvider extends ContentProvider {
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_UPDATE_SUPPLIER + "/#", UPDATE_SUPPLIER);
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_DELETE_ALL, DELETE_ALL);
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_PRODUCTS + "/#", PRODUCTS);
+        sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_DELETE_SUPPLIER + "/#", DELETE_SUPPLIER);
     }
 
     private InventoryDbHelper inventoryDbHelper;
@@ -106,6 +108,8 @@ public class InventoryProvider extends ContentProvider {
                 return InventoryContract.CONTENT_DELETE_ALL_TYPE;
             case PRODUCTS:
                 return InventoryContract.CONTENT_PRODUCTS_ITEM_TYPE;
+            case DELETE_SUPPLIER:
+                return InventoryContract.CONTENT_DELETE_SUPPLIER_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_unknown_uri_with_match, uri, match));
         }
@@ -255,6 +259,7 @@ public class InventoryProvider extends ContentProvider {
             case DELETE_ALL:
                 rowsDeleted = database.delete(InventoryContract.SuppliersEntry.TABLE_NAME, null, null);
                 rowsDeleted += database.delete(InventoryContract.ProductsEntry.TABLE_NAME, null, null);
+
                 break;
             case PRODUCTS:
                 rowsDeleted = database.delete(InventoryContract.SuppliersEntry.TABLE_NAME,
@@ -266,6 +271,14 @@ public class InventoryProvider extends ContentProvider {
                         InventoryContract.ProductsEntry._ID + "=?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))}
                 );
+
+                break;
+            case DELETE_SUPPLIER:
+                rowsDeleted = database.delete(InventoryContract.SuppliersEntry.TABLE_NAME,
+                        InventoryContract.SuppliersEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
+
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_deletion_is_not_supported_for_uri, uri));

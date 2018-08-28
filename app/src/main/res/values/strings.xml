@@ -7,6 +7,7 @@
 
     <string name="should_product_be_deleted">Should this product and all of its suppliers be deleted?</string>
     <string name="should_all_products_be_deleted">Should all products and their suppliers be deleted?</string>
+    <string name="should_supplier_be_deleted">Should this supplier be deleted?</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -16,6 +17,7 @@
     <string name="save_product_details">Save product details</string>
 
     <string name="sell">Sell</string>
+
     <string name="delete">Delete</string>
     <string name="delete_all_products">Delete all products</string>
 
@@ -51,4 +53,5 @@
     <string name="error_nothing_updated">Nothing was updated!</string>
     <string name="error_nothing_was_deleted">Nothing was deleted!</string>
     <string name="error_price_too_large_or_invalid_number">The price is too large or is an invalid number.</string>
+    <string name="error_at_least_one_supplier_needed">A product needs at least one supplier.</string>
 </resources>
