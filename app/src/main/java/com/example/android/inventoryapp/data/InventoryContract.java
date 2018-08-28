@@ -7,7 +7,6 @@ import android.provider.BaseColumns;
 public final class InventoryContract {
 
     public static final String CONTENT_AUTHORITY = "com.example.android.inventoryapp";
-    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_MAIN_VIEW = "mainview";
     public static final String PATH_SUPPLIERS = "suppliers";
@@ -20,17 +19,6 @@ public final class InventoryContract {
     public static final String PATH_PRODUCTS = "products";
     public static final String PATH_DELETE_SUPPLIER = "deletesupplier";
 
-    public static final Uri CONTENT_URI_MAIN_VIEW = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN_VIEW);
-    public static final Uri CONTENT_URI_SUPPLIERS = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SUPPLIERS);
-    public static final Uri CONTENT_URI_SELL = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SELL);
-    public static final Uri CONTENT_ADD_PRODUCT = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_ADD_PRODUCT);
-    public static final Uri CONTENT_UPDATE_PRODUCT = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_UPDATE_PRODUCT);
-    public static final Uri CONTENT_ADD_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_ADD_SUPPLIER);
-    public static final Uri CONTENT_UPDATE_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_UPDATE_SUPPLIER);
-    public static final Uri CONTENT_DELETE_ALL = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DELETE_ALL);
-    public static final Uri CONTENT_PRODUCTS = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
-    public static final Uri CONTENT_DELETE_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DELETE_SUPPLIER);
-
     public static final String CONTENT_MAIN_VIEW_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MAIN_VIEW;
     public static final String CONTENT_SUPPLIERS_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SUPPLIERS;
     public static final String CONTENT_SELL_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SELL;
@@ -41,6 +29,18 @@ public final class InventoryContract {
     public static final String CONTENT_DELETE_ALL_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DELETE_ALL;
     public static final String CONTENT_PRODUCTS_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCTS;
     public static final String CONTENT_DELETE_SUPPLIER_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DELETE_SUPPLIER;
+
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    public static final Uri CONTENT_URI_MAIN_VIEW = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN_VIEW);
+    public static final Uri CONTENT_URI_SUPPLIERS = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SUPPLIERS);
+    public static final Uri CONTENT_URI_SELL = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SELL);
+    public static final Uri CONTENT_ADD_PRODUCT = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_ADD_PRODUCT);
+    public static final Uri CONTENT_UPDATE_PRODUCT = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_UPDATE_PRODUCT);
+    public static final Uri CONTENT_ADD_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_ADD_SUPPLIER);
+    public static final Uri CONTENT_UPDATE_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_UPDATE_SUPPLIER);
+    public static final Uri CONTENT_DELETE_ALL = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DELETE_ALL);
+    public static final Uri CONTENT_PRODUCTS = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
+    public static final Uri CONTENT_DELETE_SUPPLIER = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DELETE_SUPPLIER);
 
     private InventoryContract() {
     }

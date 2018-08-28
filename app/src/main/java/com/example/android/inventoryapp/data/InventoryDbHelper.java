@@ -27,7 +27,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             InventoryContract.ProductsEntry.TABLE_NAME + "(" + InventoryContract.ProductsEntry._ID + ")" +
             ")";
 
-    public InventoryDbHelper(Context context) {
+    InventoryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

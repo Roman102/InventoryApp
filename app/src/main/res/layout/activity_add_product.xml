@@ -37,6 +37,7 @@
         android:id="@+id/product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/product_name"
         android:inputType="text" />
 
     <TextView
@@ -50,5 +51,6 @@
         android:id="@+id/price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/price"
         android:inputType="numberDecimal" />
 </LinearLayout>
