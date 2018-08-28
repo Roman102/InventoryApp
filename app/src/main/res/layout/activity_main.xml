@@ -4,13 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/add_product"
-        style="?android:attr/buttonBarButtonStyle"
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="addProduct"
-        android:text="@string/add_product" />
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/add_product"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="addProduct"
+            android:text="@string/add_product" />
+
+        <Button
+            android:id="@+id/delete_all_products"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="deleteAllProducts"
+            android:text="@string/delete_all_products" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/product_list"

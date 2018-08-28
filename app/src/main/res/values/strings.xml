@@ -4,7 +4,9 @@
     <string name="explanation">Add a product by pressing the button above. Afterwards touch a product entry in order to modify it.</string>
 
     <string name="add_another_supplier">Do you want to add another supplier?</string>
+
     <string name="should_product_be_deleted">Should this product and all of its suppliers be deleted?</string>
+    <string name="should_all_products_be_deleted">Should all products and their suppliers be deleted?</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -15,6 +17,7 @@
 
     <string name="sell">Sell</string>
     <string name="delete">Delete</string>
+    <string name="delete_all_products">Delete all products</string>
 
     <string name="product_name">Product Name:</string>
     <string name="price">Price:</string>
