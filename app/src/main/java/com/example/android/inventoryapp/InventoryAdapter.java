@@ -2,12 +2,13 @@ package com.example.android.inventoryapp;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,13 +28,11 @@ public class InventoryAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        Button sellButton = view.findViewById(R.id.sell);
-
         final long productId = Long.parseLong(cursor.getString(cursor.getColumnIndex(InventoryContract.ProductsEntry._ID)));
 
         view.setTag(productId);
 
-        sellButton.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.sell).setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -45,6 +44,45 @@ public class InventoryAdapter extends CursorAdapter {
                 } catch (RuntimeException e) {
                     (Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT)).show();
                 }
+            }
+
+        });
+
+        view.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            try {
+                                context.getContentResolver().delete(
+                                        ContentUris.withAppendedId(InventoryContract.CONTENT_PRODUCTS, productId),
+                                        null, null
+                                );
+
+                                context.getContentResolver().notifyChange(InventoryContract.CONTENT_URI_MAIN_VIEW, null);
+                            } catch (RuntimeException e) {
+                                (Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT)).show();
+                            }
+
+                            break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                    }
+                }
+
+            };
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                builder.setMessage(R.string.should_product_be_deleted)
+                        .setPositiveButton(R.string.yes, dialogClickListener)
+                        .setNegativeButton(R.string.no, dialogClickListener)
+                        .show();
             }
 
         });

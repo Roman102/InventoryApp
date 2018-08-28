@@ -48,6 +48,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/label_product_name" />
 
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        app:layout_constraintRight_toRightOf="@id/sell"
+        app:layout_constraintTop_toBottomOf="@id/sell" />
+
     <TextView
         android:id="@+id/quantity"
         android:layout_width="wrap_content"

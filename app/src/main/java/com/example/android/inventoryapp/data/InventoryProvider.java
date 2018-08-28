@@ -271,8 +271,8 @@ public class InventoryProvider extends ContentProvider {
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_deletion_is_not_supported_for_uri, uri));
         }
 
-        if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+        if (rowsDeleted <= 0) {
+            throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_nothing_was_deleted));
         }
 
         return rowsDeleted;
